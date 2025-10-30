@@ -10,6 +10,11 @@ const Dashboard = () => {
     const [uploadProgress, setUploadProgress] = useState([])
     const [dragOver, setDragOver] = useState(false)
 
+    // Set page title
+    useEffect(() => {
+        document.title = 'Dashboard - SimSync'
+    }, [])
+
     // Load user's backups when component mounts
     useEffect(() => {
         // Add a small delay to ensure authentication token is ready

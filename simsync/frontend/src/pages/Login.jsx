@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../firebase'
 
@@ -8,6 +8,11 @@ const Login = () => {
   const [isLogin, setIsLogin] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  // Set page title
+  useEffect(() => {
+    document.title = isLogin ? 'Login - SimSync' : 'Sign Up - SimSync'
+  }, [isLogin])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
