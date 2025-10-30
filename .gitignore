@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+simsync/frontend/node_modules/
+simsync/backend/__pycache__/
+
+# Environment files
+.env
+.env.local
+.env.production
+simsync/backend/.env
+simsync/frontend/.env.local
+
+# Build outputs
+dist/
+build/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup folders
+*-backup/
+frontend-backup/
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.so
+.Python
+env/
+venv/
+
+# Logs
+*.log
+logs/
