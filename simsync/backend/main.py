@@ -24,6 +24,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "https://*.vercel.app",
+        "https://simsync.dev",
+        "https://www.simsync.dev",
     ],
     allow_credentials=True,
     allow_methods=["*"],

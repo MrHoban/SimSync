@@ -1,0 +1,12 @@
+{
+  "name": "simsync",
+  "version": "1.0.0",
+  "description": "Sims 4 Custom Content Backup Tool",
+  "scripts": {
+    "build": "cd simsync/frontend && npm ci && npm run build",
+    "start": "cd simsync/backend && uvicorn main:app --host 0.0.0.0 --port $PORT"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
