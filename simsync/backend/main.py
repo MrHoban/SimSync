@@ -6,7 +6,8 @@ import os
 from dotenv import load_dotenv
 
 from routes.firebase_config import initialize_firebase
-from routes import auth, files, payments
+from routes import auth, files
+# from routes import payments  # Temporarily disabled until stripe dependency resolves
 
 # Load environment variables
 load_dotenv()
@@ -36,7 +37,7 @@ security = HTTPBearer()
 
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(files.router, prefix="/api/files", tags=["File Management"])
-app.include_router(payments.router, prefix="/api/payments", tags=["Payments"])
+# app.include_router(payments.router, prefix="/api/payments", tags=["Payments"])  # Temporarily disabled
 
 # Simple request logging
 import logging
