@@ -121,6 +121,44 @@ class ApiService {
       })
     })
   }
+
+  // Community sharing methods
+  async shareFile(fileId, description = '') {
+    return this.makeRequest('/community/share', {
+      method: 'POST',
+      body: JSON.stringify({
+        file_id: fileId,
+        description: description
+      })
+    })
+  }
+
+  async getCommunityFiles(limit = 50, offset = 0) {
+    return this.makeRequest(`/community/files?limit=${limit}&offset=${offset}`, {
+      method: 'GET'
+    })
+  }
+
+  async downloadCommunityFile(sharedFileId) {
+    return this.makeRequest(`/community/${sharedFileId}/download`, {
+      method: 'POST'
+    })
+  }
+
+  async rateCommunityFile(sharedFileId, rating) {
+    return this.makeRequest(`/community/${sharedFileId}/rate`, {
+      method: 'POST',
+      body: JSON.stringify({
+        rating: rating
+      })
+    })
+  }
+
+  async unshareFile(sharedFileId) {
+    return this.makeRequest(`/community/${sharedFileId}`, {
+      method: 'DELETE'
+    })
+  }
 }
 
 // Create and export a singleton instance
@@ -133,5 +171,10 @@ export const {
   uploadFile,
   listFiles,
   deleteFile,
-  createCheckoutSession
+  createCheckoutSession,
+  shareFile,
+  getCommunityFiles,
+  downloadCommunityFile,
+  rateCommunityFile,
+  unshareFile
 } = apiService

@@ -325,13 +325,16 @@ const Dashboard = () => {
 
     const loadCommunityFiles = async () => {
         try {
-            // This will be a new API endpoint for shared community files
-            // Start with completely empty array - no demo content
-            setCommunityFiles([])
+            console.log('Loading community files...')
+            const response = await apiService.getCommunityFiles(50, 0)
+            setCommunityFiles(response.files || [])
+            console.log('Loaded community files:', response.files?.length || 0)
             // Reset any cached ratings
             setUserRatings({})
         } catch (error) {
             console.error('Error loading community files:', error)
+            // If error, show empty state
+            setCommunityFiles([])
         }
     }
 
@@ -341,15 +344,24 @@ const Dashboard = () => {
             return
         }
         
-        // Update local rating state
-        setUserRatings(prev => ({
-            ...prev,
-            [fileId]: rating
-        }))
-        
-        // This would send the rating to the backend
-        console.log(`User ${userInfo.uid} rated file ${fileId}: ${rating} stars`)
-        alert(`Thanks for rating! You gave ${rating} star${rating !== 1 ? 's' : ''}. 🌟`)
+        try {
+            const response = await apiService.rateCommunityFile(fileId, rating)
+            
+            // Update local rating state
+            setUserRatings(prev => ({
+                ...prev,
+                [fileId]: rating
+            }))
+            
+            alert(`${response.message}\n\nCommunity average: ${response.average_rating} ⭐ (${response.total_ratings} rating${response.total_ratings !== 1 ? 's' : ''})`)
+            
+            // Refresh community files to show updated ratings
+            loadCommunityFiles()
+            
+        } catch (error) {
+            console.error('Error rating file:', error)
+            alert(`❌ Failed to rate file: ${error.message || 'Unknown error'}`)
+        }
     }
 
     const handleShareFile = async (file) => {
@@ -358,10 +370,19 @@ const Dashboard = () => {
             return
         }
         
-        const confirmed = confirm(`Share "${file.name}" with the SimSync community?\n\nThis will make your file available for other users to download and rate!`)
-        if (confirmed) {
-            // This would call the backend to share the file
-            alert('🎉 File shared with community! Other users can now discover and download your creation. (Full backend integration coming soon)')
+        const description = prompt(`Share "${file.name}" with the SimSync community?\n\nOptional: Add a description for other users:`, '')
+        if (description !== null) { // User didn't cancel
+            try {
+                const response = await apiService.shareFile(file.file_id, description || '')
+                alert(`🎉 File shared with community! Other users can now discover and download your creation.\n\nShared File ID: ${response.shared_file_id}`)
+                // Optionally refresh community files to show the new share
+                if (showCommunity) {
+                    loadCommunityFiles()
+                }
+            } catch (error) {
+                console.error('Error sharing file:', error)
+                alert(`❌ Failed to share file: ${error.message || 'Unknown error'}`)
+            }
         }
     }
 
@@ -383,15 +404,39 @@ const Dashboard = () => {
         const confirmed = confirm(`Download "${file.name}" by ${file.shared_by}?\n\n${userInfo.subscription_tier === 'basic' ? `Downloads today: ${dailyDownloads + 1}/${downloadLimit}` : 'Unlimited downloads (Premium)'}`)
         
         if (confirmed) {
-            // This would download the file from backend
-            if (userInfo.subscription_tier === 'basic') {
-                const newCount = dailyDownloads + 1
-                setDailyDownloads(newCount)
-                // Save to localStorage for persistence
-                const today = new Date().toDateString()
-                localStorage.setItem(`dailyDownloads_${today}`, newCount.toString())
+            try {
+                const response = await apiService.downloadCommunityFile(file.id)
+                
+                // Create download link and trigger download
+                const link = document.createElement('a')
+                link.href = response.download_url
+                link.download = response.file_name
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+                
+                // Update local download count for basic users
+                if (userInfo.subscription_tier === 'basic') {
+                    const newCount = dailyDownloads + 1
+                    setDailyDownloads(newCount)
+                    // Save to localStorage for persistence
+                    const today = new Date().toDateString()
+                    localStorage.setItem(`dailyDownloads_${today}`, newCount.toString())
+                }
+                
+                alert(`🎉 Downloaded "${response.file_name}"! \n\n${userInfo.subscription_tier === 'basic' ? `Downloads remaining today: ${downloadLimit - (dailyDownloads + 1)}` : '✨ Unlimited downloads with Premium!'}`)
+                
+                // Refresh community files to update download count
+                loadCommunityFiles()
+                
+            } catch (error) {
+                console.error('Error downloading file:', error)
+                if (error.message.includes('429')) {
+                    alert('📥 Daily download limit reached! Upgrade to Premium for unlimited downloads.')
+                } else {
+                    alert(`❌ Failed to download file: ${error.message || 'Unknown error'}`)
+                }
             }
-            alert(`🎉 Downloaded "${file.name}"! \n\n${userInfo.subscription_tier === 'basic' ? `Downloads remaining today: ${downloadLimit - (dailyDownloads + 1)}` : '✨ Unlimited downloads with Premium!'}`)
         }
     }
 

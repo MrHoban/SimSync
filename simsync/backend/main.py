@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 
 from routes.firebase_config import initialize_firebase
-from routes import auth, files
+from routes import auth, files, community
 from routes import payments
 
 # Load environment variables
@@ -37,6 +37,7 @@ security = HTTPBearer()
 
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(files.router, prefix="/api/files", tags=["File Management"])
+app.include_router(community.router, prefix="/api/community", tags=["Community Sharing"])
 app.include_router(payments.router, prefix="/api/payments", tags=["Payments"])
 
 # Simple request logging
