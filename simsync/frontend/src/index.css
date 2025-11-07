@@ -383,6 +383,27 @@ body {
     box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
 }
 
+.btn-share {
+    background: linear-gradient(135deg, var(--sims-lime) 0%, var(--sims-green) 100%);
+    color: var(--sims-white);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 8px;
+    margin-right: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.btn-share:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(166, 227, 41, 0.4);
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;

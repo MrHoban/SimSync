@@ -597,17 +597,6 @@ const Dashboard = () => {
                                             <button
                                                 onClick={() => handleShareFile(file)}
                                                 className="btn-share"
-                                                style={{ 
-                                                    backgroundColor: 'var(--sims-lime)', 
-                                                    color: 'white',
-                                                    border: 'none',
-                                                    padding: '6px 12px',
-                                                    borderRadius: '6px',
-                                                    fontSize: '0.8rem',
-                                                    fontWeight: '600',
-                                                    cursor: 'pointer',
-                                                    marginLeft: '8px'
-                                                }}
                                             >
                                                 🌟 Share
                                             </button>
