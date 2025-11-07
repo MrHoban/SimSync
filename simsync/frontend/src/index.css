@@ -414,3 +414,919 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Landing Page Styles */
+.landing-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--sims-light-blue) 0%, var(--sims-green) 50%, var(--sims-lime) 100%);
+    background-attachment: fixed;
+}
+
+/* Navigation Header */
+.landing-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.nav-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+}
+
+.brand-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--sims-blue);
+    transition: all 0.3s ease;
+}
+
+.brand-link:hover {
+    color: var(--sims-green);
+    transform: translateY(-1px);
+}
+
+.brand-text {
+    font-size: 1.4rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--sims-blue) 0%, var(--sims-green) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--sims-dark-gray);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.login-link:hover {
+    color: var(--sims-blue);
+    background: rgba(66, 118, 183, 0.1);
+}
+
+.btn-nav-primary {
+    background: linear-gradient(135deg, var(--sims-green) 0%, var(--sims-lime) 100%);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(33, 185, 107, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.btn-nav-primary:hover {
+    background: linear-gradient(135deg, var(--sims-lime) 0%, var(--sims-green) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(33, 185, 107, 0.4);
+}
+
+/* Hero Section */
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 20px 80px; /* Added top padding for fixed nav */
+    text-align: center;
+}
+
+.hero-content {
+    max-width: 800px;
+    color: var(--sims-white);
+}
+
+.hero-title {
+    font-size: 4rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+    animation: heroFloat 3s ease-in-out infinite;
+}
+
+.hero-subtitle {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hero-description {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 40px;
+    opacity: 0.95;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 60px;
+    flex-wrap: wrap;
+}
+
+.btn-hero-primary {
+    background: linear-gradient(135deg, var(--sims-green) 0%, var(--sims-lime) 100%);
+    color: var(--sims-white);
+    padding: 18px 36px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(33, 185, 107, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-hero-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(33, 185, 107, 0.6);
+    background: linear-gradient(135deg, var(--sims-lime) 0%, var(--sims-green) 100%);
+}
+
+.btn-hero-secondary {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--sims-white);
+    padding: 18px 36px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.btn-hero-secondary:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    flex-wrap: wrap;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--sims-white);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.stat-label {
+    display: block;
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-top: 8px;
+}
+
+@keyframes heroFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Section Styles */
+.section-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 20px;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--sims-white);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.section-subtitle {
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 50px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Features Section */
+.features-section {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+}
+
+.feature-card {
+    background: var(--sims-white);
+    padding: 40px 30px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    border-color: var(--sims-green);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.feature-card h3 {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--sims-dark-gray);
+    margin-bottom: 15px;
+}
+
+.feature-card p {
+    color: var(--sims-gray);
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+/* Pricing Section */
+.pricing-section {
+    padding: 100px 0;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 40px;
+    max-width: 800px;
+    margin: 50px auto 0;
+}
+
+.pricing-card {
+    background: var(--sims-white);
+    border-radius: 25px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    border: 3px solid transparent;
+}
+
+.pricing-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+}
+
+.pricing-card.basic {
+    border-color: var(--sims-blue);
+}
+
+.pricing-card.premium {
+    border-color: var(--sims-green);
+    transform: scale(1.05);
+}
+
+.pricing-card.featured {
+    position: relative;
+}
+
+.featured-badge {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, var(--sims-green) 0%, var(--sims-lime) 100%);
+    color: white;
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(33, 185, 107, 0.4);
+}
+
+.plan-header h3 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: var(--sims-dark-gray);
+}
+
+.price {
+    margin-bottom: 30px;
+}
+
+.price .amount {
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--sims-blue);
+}
+
+.pricing-card.premium .price .amount {
+    color: var(--sims-green);
+}
+
+.price .period {
+    font-size: 1.2rem;
+    color: var(--sims-gray);
+}
+
+.features-list {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0;
+    text-align: left;
+}
+
+.features-list li {
+    padding: 8px 0;
+    font-size: 1rem;
+    color: var(--sims-dark-gray);
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.btn-plan {
+    display: inline-block;
+    padding: 15px 35px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-plan.basic {
+    background: linear-gradient(135deg, var(--sims-blue) 0%, var(--sims-light-blue) 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(66, 118, 183, 0.4);
+}
+
+.btn-plan.basic:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(66, 118, 183, 0.6);
+}
+
+.btn-plan.premium {
+    background: linear-gradient(135deg, var(--sims-green) 0%, var(--sims-lime) 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(33, 185, 107, 0.4);
+}
+
+.btn-plan.premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(33, 185, 107, 0.6);
+}
+
+.guarantee {
+    font-size: 0.9rem;
+    color: var(--sims-gray);
+    margin-top: 15px;
+    font-style: italic;
+}
+
+/* How It Works Section */
+.how-it-works-section {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+}
+
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 50px;
+    margin-top: 50px;
+}
+
+.step {
+    text-align: center;
+    color: var(--sims-white);
+}
+
+.step-number {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--sims-green) 0%, var(--sims-lime) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0 auto 25px;
+    box-shadow: 0 8px 25px rgba(33, 185, 107, 0.4);
+}
+
+.step h3 {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.step p {
+    font-size: 1rem;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+/* CTA Section */
+.cta-section {
+    padding: 100px 20px;
+    text-align: center;
+}
+
+.cta-content {
+    max-width: 600px;
+    margin: 0 auto;
+    color: var(--sims-white);
+}
+
+.cta-content h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.cta-content p {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.btn-cta-primary {
+    background: linear-gradient(135deg, var(--sims-green) 0%, var(--sims-lime) 100%);
+    color: white;
+    padding: 20px 40px;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(33, 185, 107, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-cta-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(33, 185, 107, 0.6);
+}
+
+.cta-note {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-top: 25px;
+}
+
+/* Footer */
+.landing-footer {
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(20px);
+    padding: 60px 20px 20px;
+    color: var(--sims-white);
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.footer-section h4 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.footer-section p {
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.footer-section a {
+    color: var(--sims-lime);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-section a:hover {
+    color: var(--sims-green);
+    text-decoration: underline;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    opacity: 0.7;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 3rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.4rem;
+    }
+    
+    .hero-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .hero-stats {
+        gap: 40px;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pricing-card.premium {
+        transform: none;
+    }
+    
+    .steps-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    /* Navigation responsive */
+    .nav-content {
+        padding: 12px 16px;
+    }
+    
+    .brand-link {
+        font-size: 1.3rem;
+    }
+    
+    .brand-text {
+        font-size: 1.2rem;
+    }
+    
+    .nav-actions {
+        gap: 12px;
+    }
+    
+    .nav-link {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+    }
+    
+    .btn-nav-primary {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Premium Upgrade Page Styles */
+.premium-upgrade-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--sims-light-blue) 0%, var(--sims-green) 50%, var(--sims-lime) 100%);
+    background-attachment: fixed;
+    padding: 20px;
+}
+
+.premium-nav {
+    max-width: 1200px;
+    margin: 0 auto 20px;
+}
+
+.btn-back {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--sims-white);
+    padding: 12px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-back:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.premium-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.upgrade-card {
+    background: var(--sims-white);
+    border-radius: 25px;
+    padding: 50px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    border: 3px solid var(--sims-green);
+    position: relative;
+    overflow: hidden;
+}
+
+.upgrade-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--sims-green) 0%, var(--sims-lime) 100%);
+}
+
+.upgrade-header h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--sims-green);
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 2px rgba(33, 185, 107, 0.2);
+}
+
+.upgrade-header p {
+    font-size: 1.2rem;
+    color: var(--sims-gray);
+    margin-bottom: 40px;
+    line-height: 1.5;
+}
+
+.upgrade-features {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border-radius: 20px;
+    padding: 30px;
+    margin: 40px 0;
+    border: 2px solid var(--sims-green);
+}
+
+.upgrade-features h3 {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--sims-green);
+    margin-bottom: 25px;
+}
+
+.upgrade-features ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}
+
+.upgrade-features li {
+    padding: 8px 0;
+    font-size: 1rem;
+    color: var(--sims-dark-gray);
+    font-weight: 500;
+    border-bottom: 1px solid #bbf7d0;
+}
+
+.upgrade-features li:last-child {
+    border-bottom: none;
+}
+
+.upgrade-pricing {
+    margin: 40px 0;
+}
+
+.price {
+    margin-bottom: 20px;
+}
+
+.price .amount {
+    font-size: 4rem;
+    font-weight: bold;
+    color: var(--sims-green);
+    text-shadow: 2px 2px 4px rgba(33, 185, 107, 0.2);
+}
+
+.price .period {
+    font-size: 1.5rem;
+    color: var(--sims-gray);
+    font-weight: 600;
+}
+
+.price-note {
+    font-size: 1rem;
+    color: var(--sims-gray);
+    font-weight: 500;
+}
+
+.btn-upgrade {
+    background: linear-gradient(135deg, var(--sims-green) 0%, var(--sims-lime) 100%);
+    border: none;
+    border-radius: 50px;
+    padding: 20px 40px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 40px auto;
+    min-width: 250px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 8px 25px rgba(33, 185, 107, 0.4);
+}
+
+.btn-upgrade:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(33, 185, 107, 0.6);
+    background: linear-gradient(135deg, var(--sims-lime) 0%, var(--sims-green) 100%);
+}
+
+.btn-upgrade:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.upgrade-security {
+    margin: 40px 0 20px;
+    padding: 25px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 15px;
+    border: 2px solid var(--sims-light-blue);
+}
+
+.upgrade-security p {
+    font-size: 1rem;
+    color: var(--sims-dark-gray);
+    margin: 0;
+    line-height: 1.6;
+}
+
+.upgrade-guarantee {
+    font-size: 1rem;
+    color: var(--sims-gray);
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+/* Responsive Premium Page */
+@media (max-width: 768px) {
+    .premium-upgrade-container {
+        padding: 15px;
+    }
+    
+    .upgrade-card {
+        padding: 30px 25px;
+    }
+    
+    .upgrade-header h1 {
+        font-size: 2rem;
+    }
+    
+    .price .amount {
+        font-size: 3rem;
+    }
+    
+    .btn-upgrade {
+        padding: 18px 30px;
+        font-size: 1.1rem;
+        min-width: 200px;
+    }
+}
+
+/* Dashboard Premium Elements */
+.user-tier-info {
+    margin-top: 8px;
+}
+
+.tier-badge {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.tier-badge.basic {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    color: var(--sims-blue);
+    border: 2px solid var(--sims-light-blue);
+}
+
+.tier-badge.premium {
+    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+    color: var(--sims-green);
+    border: 2px solid var(--sims-green);
+}
+
+.upgrade-link {
+    color: var(--sims-green);
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.upgrade-link:hover {
+    color: var(--sims-lime);
+    text-decoration: underline;
+}
+
+.btn-premium {
+    background: linear-gradient(135deg, var(--sims-green) 0%, var(--sims-lime) 100%);
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 15px rgba(33, 185, 107, 0.3);
+}
+
+.btn-premium:hover {
+    background: linear-gradient(135deg, var(--sims-lime) 0%, var(--sims-green) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(33, 185, 107, 0.4);
+}

@@ -8,6 +8,7 @@ simsync/backend/__pycache__/
 .env.local
 .env.production
 simsync/backend/.env
+simsync/frontend/.env
 simsync/frontend/.env.local
 
 # Firebase Service Account keys (CRITICAL - Never commit these!)

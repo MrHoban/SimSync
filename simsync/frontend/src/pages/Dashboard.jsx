@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { signOut } from 'firebase/auth'
 import { auth } from '../firebase'
 import { apiService } from '../services/apiService'
@@ -9,17 +10,19 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true)
     const [uploadProgress, setUploadProgress] = useState([])
     const [dragOver, setDragOver] = useState(false)
+    const [userInfo, setUserInfo] = useState(null)
 
     // Set page title
     useEffect(() => {
         document.title = 'Dashboard - SimSync'
     }, [])
 
-    // Load user's backups when component mounts
+    // Load user's data when component mounts
     useEffect(() => {
         // Add a small delay to ensure authentication token is ready
         // This prevents the "token used too early" error after login
         const timer = setTimeout(() => {
+            loadUserData()
             loadBackups()
         }, 500) // 500ms delay (reduced since backend now handles timing better)
 
@@ -67,6 +70,16 @@ const Dashboard = () => {
         }
     }
 
+    const loadUserData = async () => {
+        try {
+            const userResponse = await apiService.verifyUser()
+            setUserInfo(userResponse)
+            console.log('User info loaded:', userResponse)
+        } catch (error) {
+            console.error('Error loading user info:', error)
+        }
+    }
+
     const loadBackups = async () => {
         try {            
             const response = await apiService.listFiles()
@@ -87,6 +100,23 @@ const Dashboard = () => {
     const handleFileUpload = async (event) => {
         const files = Array.from(event.target.files)
         if (files.length === 0) return
+
+        // Check storage limits
+        if (userInfo) {
+            const totalUploadSize = files.reduce((total, file) => total + file.size, 0) / (1024 * 1024) // Convert to MB
+            const availableStorage = userInfo.storage_limit - userInfo.storage_used
+            
+            if (totalUploadSize > availableStorage) {
+                alert(`Upload exceeds storage limit!\n\nUploading: ${totalUploadSize.toFixed(1)}MB\nAvailable: ${availableStorage.toFixed(1)}MB\n\n${userInfo.subscription_tier === 'basic' ? 'Upgrade to Premium for 500MB storage!' : 'Please delete some files first.'}`)
+                return
+            }
+            
+            // Check file count limits for basic users
+            if (userInfo.subscription_tier === 'basic' && backups.length + files.length > 25) {
+                alert(`Upload exceeds file limit!\n\nBasic users can store up to 25 files.\nYou currently have ${backups.length} files and are trying to upload ${files.length} more.\n\nUpgrade to Premium for unlimited files!`)
+                return
+            }
+        }
 
         setUploading(true)
         
@@ -155,9 +185,10 @@ const Dashboard = () => {
                 alert(`❌ Upload failed for all files.\n\nErrors:\n${errors.join('\n')}`)
             }
 
-            // Reload backups to show new files
+            // Reload backups and user data to show new files and updated storage usage
             if (completedCount > 0) {
                 loadBackups()
+                loadUserData() // Refresh user storage info
             }
 
         } catch (error) {
@@ -329,13 +360,34 @@ const Dashboard = () => {
                     <div>
                         <h1 className="dashboard-title">🧩 SimSync Dashboard</h1>
                         <p className="dashboard-subtitle">Welcome back, {auth.currentUser?.email}</p>
+                        {userInfo && (
+                            <div className="user-tier-info">
+                                {userInfo.subscription_tier === 'premium' ? (
+                                    <p className="tier-badge premium">
+                                        🚀 Premium Member - {userInfo.storage_used}MB / {userInfo.storage_limit}MB used
+                                    </p>
+                                ) : (
+                                    <p className="tier-badge basic">
+                                        🌟 Basic Tier - {userInfo.storage_used}MB / {userInfo.storage_limit}MB used - 
+                                        <Link to="/premium" className="upgrade-link"> Upgrade to Premium</Link>
+                                    </p>
+                                )}
+                            </div>
+                        )}
                     </div>
-                    <button
-                        onClick={handleSignOut}
-                        className="btn-secondary"
-                    >
-                        Sign Out
-                    </button>
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        {userInfo?.subscription_tier !== 'premium' && (
+                            <Link to="/premium" className="btn-premium">
+                                🚀 Go Premium
+                            </Link>
+                        )}
+                        <button
+                            onClick={handleSignOut}
+                            className="btn-secondary"
+                        >
+                            Sign Out
+                        </button>
+                    </div>
                 </div>
 
                 {/* Upload Section */}

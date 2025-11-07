@@ -4,6 +4,8 @@ from pydantic import BaseModel
 import stripe
 import os
 from typing import Dict, Any
+from datetime import datetime
+from .firebase_config import get_firestore_client
 
 # Initialize Stripe
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
@@ -80,8 +82,28 @@ async def stripe_webhook(request: Dict[str, Any]) -> Dict[str, str]:
             user_id = session.get('client_reference_id')
             
             if user_id:
-                # TODO: Update user's subscription status in your database
                 print(f"Payment successful for user: {user_id}")
+                
+                # Update user's subscription in Firestore
+                try:
+                    db = get_firestore_client()
+                    
+                    user_data = {
+                        'subscription_tier': 'premium',
+                        'subscription_status': 'active',
+                        'storage_limit': 500,  # 500MB for premium
+                        'updated_at': datetime.now(),
+                        'premium_activated_at': datetime.now(),
+                        'stripe_session_id': session.get('id'),
+                        'stripe_customer_id': session.get('customer')
+                    }
+                    
+                    db.collection('users').document(user_id).update(user_data)
+                    print(f"User {user_id} upgraded to premium successfully")
+                    
+                except Exception as db_error:
+                    print(f"Error updating user subscription in database: {db_error}")
+                    # Don't fail the webhook, log the error
                 
         return {"status": "success"}
         
