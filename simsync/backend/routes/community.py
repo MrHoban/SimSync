@@ -2,7 +2,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, timedelta
 from firebase_admin import firestore
 from .firebase_config import get_firestore_client, get_storage_bucket
 from .auth import verify_token
@@ -163,7 +163,8 @@ async def download_community_file(shared_file_id: str, user = Depends(verify_tok
             raise HTTPException(status_code=404, detail="File not found in storage")
         
         # Generate signed URL (valid for 1 hour)
-        download_url = blob.generate_signed_url(expiration=datetime.now().timestamp() + 3600, method='GET')
+        expiration_time = datetime.now() + timedelta(hours=1)
+        download_url = blob.generate_signed_url(expiration=expiration_time, method='GET')
         
         # Update download count
         db.collection('shared_files').document(shared_file_id).update({
