@@ -13,6 +13,7 @@ const Dashboard = () => {
     const [userInfo, setUserInfo] = useState(null)
     const [communityFiles, setCommunityFiles] = useState([])
     const [showCommunity, setShowCommunity] = useState(false)
+    const [userRatings, setUserRatings] = useState({})
 
     // Set page title
     useEffect(() => {
@@ -304,29 +305,31 @@ const Dashboard = () => {
 
     const loadCommunityFiles = async () => {
         try {
-            // This would be a new API endpoint for shared community files
-            // For now, we'll use a placeholder
-            setCommunityFiles([
-                {
-                    id: 'demo1',
-                    name: 'Beautiful Hair Pack.package',
-                    size: 1024 * 1024 * 5, // 5MB
-                    shared_by: 'SimmerFan2024',
-                    downloads: 156,
-                    description: 'Amazing hair collection for your Sims!'
-                },
-                {
-                    id: 'demo2', 
-                    name: 'Modern Kitchen Set.package',
-                    size: 1024 * 1024 * 8, // 8MB
-                    shared_by: 'BuildMaster',
-                    downloads: 89,
-                    description: 'Complete modern kitchen furniture set'
-                }
-            ])
+            // This will be a new API endpoint for shared community files
+            // Start with completely empty array - no demo content
+            setCommunityFiles([])
+            // Reset any cached ratings
+            setUserRatings({})
         } catch (error) {
             console.error('Error loading community files:', error)
         }
+    }
+
+    const handleRateFile = async (fileId, rating) => {
+        if (!userInfo) {
+            alert('Please log in to rate files!')
+            return
+        }
+        
+        // Update local rating state
+        setUserRatings(prev => ({
+            ...prev,
+            [fileId]: rating
+        }))
+        
+        // This would send the rating to the backend
+        console.log(`User ${userInfo.uid} rated file ${fileId}: ${rating} stars`)
+        alert(`Thanks for rating! You gave ${rating} star${rating !== 1 ? 's' : ''}. 🌟`)
     }
 
     const handleShareFile = async (file) => {
@@ -568,7 +571,8 @@ const Dashboard = () => {
                         <button
                             onClick={() => {
                                 setShowCommunity(!showCommunity)
-                                if (!showCommunity && communityFiles.length === 0) {
+                                if (!showCommunity) {
+                                    // Always refresh community files when opening
                                     loadCommunityFiles()
                                 }
                             }}
@@ -582,15 +586,37 @@ const Dashboard = () => {
                     {showCommunity && (
                         <div>
                             {communityFiles.length === 0 ? (
-                                <p style={{ 
-                                    color: 'var(--sims-gray)', 
+                                <div style={{ 
                                     textAlign: 'center',
-                                    fontSize: '1rem',
-                                    fontStyle: 'italic',
-                                    padding: '20px'
+                                    padding: '40px 20px',
+                                    backgroundColor: 'var(--sims-light-gray)',
+                                    borderRadius: '12px',
+                                    border: '2px dashed var(--sims-light-blue)'
                                 }}>
-                                    Loading community files...
-                                </p>
+                                    <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🌟</div>
+                                    <h3 style={{ 
+                                        color: 'var(--sims-blue)', 
+                                        marginBottom: '12px',
+                                        fontSize: '1.2rem'
+                                    }}>
+                                        Be the First to Share!
+                                    </h3>
+                                    <p style={{ 
+                                        color: 'var(--sims-gray)', 
+                                        fontSize: '1rem',
+                                        marginBottom: '16px',
+                                        lineHeight: '1.5'
+                                    }}>
+                                        No community files yet - you could be the first SimSync user to share your amazing custom content!
+                                    </p>
+                                    <p style={{ 
+                                        color: 'var(--sims-dark-gray)', 
+                                        fontSize: '0.9rem',
+                                        fontWeight: '600'
+                                    }}>
+                                        💎 Upgrade to Premium to start sharing your mods and CC with the community
+                                    </p>
+                                </div>
                             ) : (
                                 <div>
                                     {communityFiles.map((file) => (
@@ -612,12 +638,58 @@ const Dashboard = () => {
                                                 <div style={{ 
                                                     fontSize: '0.85rem', 
                                                     color: 'var(--sims-dark-gray)',
-                                                    fontStyle: 'italic'
+                                                    fontStyle: 'italic',
+                                                    marginBottom: '8px'
                                                 }}>
                                                     {file.description}
                                                 </div>
+                                                
+                                                {/* Rating System */}
+                                                <div style={{ 
+                                                    display: 'flex', 
+                                                    alignItems: 'center', 
+                                                    gap: '8px',
+                                                    marginBottom: '4px'
+                                                }}>
+                                                    <span style={{ fontSize: '0.8rem', color: 'var(--sims-gray)' }}>Rate:</span>
+                                                    {[1, 2, 3, 4, 5].map((star) => (
+                                                        <button
+                                                            key={star}
+                                                            onClick={() => handleRateFile(file.id, star)}
+                                                            style={{
+                                                                background: 'none',
+                                                                border: 'none',
+                                                                fontSize: '1.2rem',
+                                                                cursor: 'pointer',
+                                                                color: userRatings[file.id] >= star ? '#FFD700' : '#DDD',
+                                                                padding: '0 2px'
+                                                            }}
+                                                            title={`Rate ${star} star${star !== 1 ? 's' : ''}`}
+                                                        >
+                                                            ⭐
+                                                        </button>
+                                                    ))}
+                                                    {userRatings[file.id] && (
+                                                        <span style={{ 
+                                                            fontSize: '0.75rem', 
+                                                            color: 'var(--sims-green)',
+                                                            fontWeight: '600'
+                                                        }}>
+                                                            You rated: {userRatings[file.id]} ⭐
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                
+                                                {/* Average Rating Display */}
+                                                <div style={{ 
+                                                    fontSize: '0.75rem', 
+                                                    color: 'var(--sims-gray)' 
+                                                }}>
+                                                    ⭐ {file.average_rating || 'No ratings yet'} 
+                                                    {file.rating_count > 0 && ` (${file.rating_count} rating${file.rating_count !== 1 ? 's' : ''})`}
+                                                </div>
                                             </div>
-                                            <div>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                                 <button
                                                     onClick={() => alert('🚀 Community downloads coming soon! This feature will be available in the next update.')}
                                                     className="btn-download"
