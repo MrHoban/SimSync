@@ -43,6 +43,7 @@ class ApiService {
       
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
+        console.error(`API Error ${response.status}:`, errorData)
         
         // If it's a 401 and we haven't retried yet, wait a bit and try again
         // This handles the "token used too early" timing issue
@@ -52,7 +53,9 @@ class ApiService {
           return this.makeRequest(endpoint, options, retryCount + 1)
         }
         
-        throw new Error(errorData.detail || 'Authentication failed')
+        // Provide more detailed error message
+        const errorMessage = errorData.detail || errorData.message || `HTTP ${response.status} error`
+        throw new Error(errorMessage)
       }
 
       return await response.json()

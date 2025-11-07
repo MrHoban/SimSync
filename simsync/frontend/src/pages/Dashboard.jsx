@@ -373,7 +373,8 @@ const Dashboard = () => {
         const description = prompt(`Share "${file.name}" with the SimSync community?\n\nOptional: Add a description for other users:`, '')
         if (description !== null) { // User didn't cancel
             try {
-                const response = await apiService.shareFile(file.file_id, description || '')
+                console.log('Sharing file with ID:', file.id, 'Name:', file.name)
+                const response = await apiService.shareFile(file.id, description || '')
                 alert(`🎉 File shared with community! Other users can now discover and download your creation.\n\nShared File ID: ${response.shared_file_id}`)
                 // Optionally refresh community files to show the new share
                 if (showCommunity) {
@@ -381,6 +382,7 @@ const Dashboard = () => {
                 }
             } catch (error) {
                 console.error('Error sharing file:', error)
+                console.error('Full error object:', JSON.stringify(error, null, 2))
                 alert(`❌ Failed to share file: ${error.message || 'Unknown error'}`)
             }
         }

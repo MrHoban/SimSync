@@ -39,14 +39,17 @@ async def share_file(request: ShareFileRequest, user = Depends(verify_token)):
     try:
         db = get_firestore_client()
         
-        # Get the original file info
-        user_files_ref = db.collection('files').where('user_id', '==', user['uid']).where('file_id', '==', request.file_id)
-        user_files = list(user_files_ref.stream())
+        # Get the original file info using document ID
+        file_doc = db.collection('files').document(request.file_id).get()
         
-        if not user_files:
+        if not file_doc.exists:
             raise HTTPException(status_code=404, detail="File not found")
+            
+        original_file = file_doc.to_dict()
         
-        original_file = user_files[0].to_dict()
+        # Verify the file belongs to the current user
+        if original_file.get('user_id') != user['uid']:
+            raise HTTPException(status_code=403, detail="You can only share your own files")
         
         # Check if file is already shared
         existing_share = db.collection('shared_files').where('original_file_id', '==', request.file_id).where('shared_by_uid', '==', user['uid']).stream()
@@ -60,7 +63,7 @@ async def share_file(request: ShareFileRequest, user = Depends(verify_token)):
             'original_file_id': request.file_id,
             'shared_by_uid': user['uid'],
             'shared_by_name': user.get('name', user.get('email', '').split('@')[0]),
-            'file_name': original_file['filename'],
+            'file_name': original_file['name'],
             'file_size': original_file['size'],
             'description': request.description,
             'downloads_count': 0,
