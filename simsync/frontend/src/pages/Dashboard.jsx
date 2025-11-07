@@ -414,13 +414,21 @@ const Dashboard = () => {
             try {
                 const response = await apiService.downloadCommunityFile(file.id)
                 
-                // Create download link and trigger download
-                const link = document.createElement('a')
-                link.href = response.download_url
-                link.download = response.file_name
-                document.body.appendChild(link)
-                link.click()
-                document.body.removeChild(link)
+                // Open download in new tab (better for large Sims 4 files)
+                const newWindow = window.open(response.download_url, '_blank', 'noopener,noreferrer')
+                
+                // Fallback: if popup blocked, use traditional download method
+                if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                    console.log('Popup blocked, using fallback download method')
+                    const link = document.createElement('a')
+                    link.href = response.download_url
+                    link.download = response.file_name
+                    link.target = '_blank'
+                    link.rel = 'noopener noreferrer'
+                    document.body.appendChild(link)
+                    link.click()
+                    document.body.removeChild(link)
+                }
                 
                 // Update local download count for basic users
                 if (userInfo.subscription_tier === 'basic') {
@@ -431,7 +439,7 @@ const Dashboard = () => {
                     localStorage.setItem(`dailyDownloads_${today}`, newCount.toString())
                 }
                 
-                alert(`🎉 Downloaded "${response.file_name}"! \n\n${userInfo.subscription_tier === 'basic' ? `Downloads remaining today: ${downloadLimit - (dailyDownloads + 1)}` : '✨ Unlimited downloads with Premium!'}`)
+                alert(`🎉 Download started for "${response.file_name}"! \n\nA new tab opened for the download. Check your browser's Downloads folder.\n\n${userInfo.subscription_tier === 'basic' ? `Downloads remaining today: ${downloadLimit - (dailyDownloads + 1)}` : '✨ Unlimited downloads with Premium!'}`)
                 
                 // Refresh community files to update download count
                 loadCommunityFiles()
