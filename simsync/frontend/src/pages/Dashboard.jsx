@@ -14,6 +14,8 @@ const Dashboard = () => {
     const [communityFiles, setCommunityFiles] = useState([])
     const [showCommunity, setShowCommunity] = useState(false)
     const [userRatings, setUserRatings] = useState({})
+    const [dailyDownloads, setDailyDownloads] = useState(0)
+    const [downloadLimit] = useState(10) // Basic tier daily limit
 
     // Set page title
     useEffect(() => {
@@ -27,6 +29,7 @@ const Dashboard = () => {
         const timer = setTimeout(() => {
             loadUserData()
             loadBackups()
+            loadDailyDownloadCount()
         }, 500) // 500ms delay (reduced since backend now handles timing better)
 
         return () => clearTimeout(timer)
@@ -57,6 +60,23 @@ const Dashboard = () => {
             }
         }
         setLoading(false)
+    }
+
+    const loadDailyDownloadCount = async () => {
+        try {
+            // This would get the user's daily download count from backend
+            // For now, load from localStorage or start at 0
+            const today = new Date().toDateString()
+            const stored = localStorage.getItem(`dailyDownloads_${today}`)
+            if (stored) {
+                setDailyDownloads(parseInt(stored))
+            } else {
+                setDailyDownloads(0)
+            }
+        } catch (error) {
+            console.error('Error loading daily download count:', error)
+            setDailyDownloads(0)
+        }
     }
 
     const handleFileUpload = async (event) => {
@@ -333,15 +353,45 @@ const Dashboard = () => {
     }
 
     const handleShareFile = async (file) => {
-        if (userInfo?.subscription_tier !== 'premium') {
-            alert('🚀 File sharing is a Premium feature! Upgrade to Premium to share your content with the SimSync community.')
+        if (!userInfo) {
+            alert('Please log in to share files!')
             return
         }
         
-        const confirmed = confirm(`Share "${file.name}" with the SimSync community?\n\nOther users will be able to download this file.`)
+        const confirmed = confirm(`Share "${file.name}" with the SimSync community?\n\nThis will make your file available for other users to download and rate!`)
         if (confirmed) {
             // This would call the backend to share the file
-            alert('🎉 File shared with community! (Feature coming soon)')
+            alert('🎉 File shared with community! Other users can now discover and download your creation. (Full backend integration coming soon)')
+        }
+    }
+
+    const handleCommunityDownload = async (file) => {
+        if (!userInfo) {
+            alert('Please log in to download community files!')
+            return
+        }
+
+        // Check download limits for basic users
+        if (userInfo.subscription_tier === 'basic') {
+            if (dailyDownloads >= downloadLimit) {
+                alert(`📥 Download limit reached!\n\nBasic users can download ${downloadLimit} community files per day.\n\n🚀 Upgrade to Premium for unlimited downloads!`)
+                return
+            }
+        }
+
+        // Proceed with download
+        const confirmed = confirm(`Download "${file.name}" by ${file.shared_by}?\n\n${userInfo.subscription_tier === 'basic' ? `Downloads today: ${dailyDownloads + 1}/${downloadLimit}` : 'Unlimited downloads (Premium)'}`)
+        
+        if (confirmed) {
+            // This would download the file from backend
+            if (userInfo.subscription_tier === 'basic') {
+                const newCount = dailyDownloads + 1
+                setDailyDownloads(newCount)
+                // Save to localStorage for persistence
+                const today = new Date().toDateString()
+                localStorage.setItem(`dailyDownloads_${today}`, newCount.toString())
+            }
+            alert(`🎉 Downloaded "${file.name}"! \n\n${userInfo.subscription_tier === 'basic' ? `Downloads remaining today: ${downloadLimit - (dailyDownloads + 1)}` : '✨ Unlimited downloads with Premium!'}`)
         }
     }
 
@@ -371,10 +421,25 @@ const Dashboard = () => {
                                         🚀 Premium Member - {userInfo.storage_used}MB / {userInfo.storage_limit}MB used
                                     </p>
                                 ) : (
-                                    <p className="tier-badge basic">
-                                        🌟 Basic Tier - {userInfo.storage_used}MB / {userInfo.storage_limit}MB used - 
-                                        <Link to="/premium" className="upgrade-link"> Upgrade to Premium</Link>
-                                    </p>
+                                    <div>
+                                        <p className="tier-badge basic">
+                                            🌟 Basic Tier - {userInfo.storage_used}MB / {userInfo.storage_limit}MB used - 
+                                            <Link to="/premium" className="upgrade-link"> Upgrade to Premium</Link>
+                                        </p>
+                                        <p style={{ 
+                                            fontSize: '0.85rem', 
+                                            color: 'var(--sims-gray)', 
+                                            margin: '4px 0 0 0',
+                                            fontWeight: '600'
+                                        }}>
+                                            📥 Community Downloads: {dailyDownloads}/{downloadLimit} today
+                                            {dailyDownloads >= downloadLimit && (
+                                                <span style={{ color: 'var(--sims-red)', marginLeft: '8px' }}>
+                                                    (Limit reached - Upgrade for unlimited!)
+                                                </span>
+                                            )}
+                                        </p>
+                                    </div>
                                 )}
                             </div>
                         )}
@@ -529,25 +594,23 @@ const Dashboard = () => {
                                             >
                                                 Download
                                             </button>
-                                            {userInfo?.subscription_tier === 'premium' && (
-                                                <button
-                                                    onClick={() => handleShareFile(file)}
-                                                    className="btn-share"
-                                                    style={{ 
-                                                        backgroundColor: 'var(--sims-lime)', 
-                                                        color: 'white',
-                                                        border: 'none',
-                                                        padding: '6px 12px',
-                                                        borderRadius: '6px',
-                                                        fontSize: '0.8rem',
-                                                        fontWeight: '600',
-                                                        cursor: 'pointer',
-                                                        marginLeft: '8px'
-                                                    }}
-                                                >
-                                                    Share
-                                                </button>
-                                            )}
+                                            <button
+                                                onClick={() => handleShareFile(file)}
+                                                className="btn-share"
+                                                style={{ 
+                                                    backgroundColor: 'var(--sims-lime)', 
+                                                    color: 'white',
+                                                    border: 'none',
+                                                    padding: '6px 12px',
+                                                    borderRadius: '6px',
+                                                    fontSize: '0.8rem',
+                                                    fontWeight: '600',
+                                                    cursor: 'pointer',
+                                                    marginLeft: '8px'
+                                                }}
+                                            >
+                                                🌟 Share
+                                            </button>
                                             <button
                                                 onClick={() => handleDelete(file)}
                                                 className="btn-delete"
@@ -691,10 +754,20 @@ const Dashboard = () => {
                                             </div>
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                                 <button
-                                                    onClick={() => alert('🚀 Community downloads coming soon! This feature will be available in the next update.')}
+                                                    onClick={() => handleCommunityDownload(file)}
                                                     className="btn-download"
+                                                    disabled={userInfo?.subscription_tier === 'basic' && dailyDownloads >= downloadLimit}
+                                                    style={{
+                                                        opacity: userInfo?.subscription_tier === 'basic' && dailyDownloads >= downloadLimit ? 0.5 : 1,
+                                                        cursor: userInfo?.subscription_tier === 'basic' && dailyDownloads >= downloadLimit ? 'not-allowed' : 'pointer'
+                                                    }}
                                                 >
-                                                    Download
+                                                    📥 Download
+                                                    {userInfo?.subscription_tier === 'basic' && (
+                                                        <div style={{ fontSize: '0.7rem', marginTop: '2px' }}>
+                                                            {dailyDownloads}/{downloadLimit} today
+                                                        </div>
+                                                    )}
                                                 </button>
                                             </div>
                                         </div>
@@ -719,9 +792,17 @@ const Dashboard = () => {
                                             fontSize: '0.9rem', 
                                             color: 'var(--sims-gray)' 
                                         }}>
+                                            Everyone can share! Use the "🌟 Share" button on your files above.
+                                        </p>
+                                        <p style={{ 
+                                            margin: '8px 0 0 0', 
+                                            fontSize: '0.85rem', 
+                                            color: 'var(--sims-blue)',
+                                            fontWeight: '600'
+                                        }}>
                                             {userInfo?.subscription_tier === 'premium' 
-                                                ? 'Use the "Share" button on your files above!'
-                                                : 'Upgrade to Premium to share your custom content with the community!'
+                                                ? '✨ Premium: Unlimited downloads!' 
+                                                : `📥 Basic: ${downloadLimit - dailyDownloads} downloads left today • Upgrade for unlimited!`
                                             }
                                         </p>
                                     </div>
