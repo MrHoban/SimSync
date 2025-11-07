@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
-from .firebase_config import get_firestore_client, get_storage_client
+from .firebase_config import get_firestore_client, get_storage_bucket
 from .auth import verify_token
 import uuid
 
@@ -126,7 +126,6 @@ async def download_community_file(shared_file_id: str, user = Depends(verify_tok
     """Download a community shared file."""
     try:
         db = get_firestore_client()
-        storage_client = get_storage_client()
         
         # Get shared file info
         shared_file_doc = db.collection('shared_files').document(shared_file_id).get()
@@ -150,7 +149,7 @@ async def download_community_file(shared_file_id: str, user = Depends(verify_tok
                     raise HTTPException(status_code=429, detail="Daily download limit reached. Upgrade to Premium for unlimited downloads!")
         
         # Generate download URL
-        bucket = storage_client.bucket()
+        bucket = get_storage_bucket()
         blob = bucket.blob(shared_file_data['storage_path'])
         
         if not blob.exists():
