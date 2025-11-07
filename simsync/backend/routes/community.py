@@ -100,12 +100,10 @@ async def get_community_files(limit: int = 50, offset: int = 0):
     try:
         db = get_firestore_client()
         
-        # Get shared files ordered by creation date (newest first)
+        # Get shared files - using simple query until index is fully propagated
         query = (db.collection('shared_files')
                 .where('is_active', '==', True)
-                .order_by('created_at', direction='DESCENDING')
-                .limit(limit)
-                .offset(offset))
+                .limit(limit))
         
         shared_files = []
         for doc in query.stream():

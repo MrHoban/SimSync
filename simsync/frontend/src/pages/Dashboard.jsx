@@ -383,7 +383,12 @@ const Dashboard = () => {
             } catch (error) {
                 console.error('Error sharing file:', error)
                 console.error('Full error object:', JSON.stringify(error, null, 2))
-                alert(`❌ Failed to share file: ${error.message || 'Unknown error'}`)
+                
+                if (error.message && error.message.includes('already shared')) {
+                    alert(`ℹ️ This file is already shared with the community!\n\nYou can find it in the Community section below.`)
+                } else {
+                    alert(`❌ Failed to share file: ${error.message || 'Unknown error'}`)
+                }
             }
         }
     }
