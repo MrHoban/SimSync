@@ -1,8 +1,10 @@
 {
+  "framework": "vite",
   "buildCommand": "cd simsync/frontend && npm install && npm run build",
   "outputDirectory": "simsync/frontend/dist",
   "devCommand": "cd simsync/frontend && npm run dev",
   "installCommand": "cd simsync/frontend && npm install",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD ./simsync/backend/",
   "rewrites": [
     {
       "source": "/(.*)",
