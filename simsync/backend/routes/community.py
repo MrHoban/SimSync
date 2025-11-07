@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
+from firebase_admin import firestore
 from .firebase_config import get_firestore_client, get_storage_bucket
 from .auth import verify_token
 import uuid
@@ -63,17 +64,17 @@ async def share_file(request: ShareFileRequest, user = Depends(verify_token)):
             'original_file_id': request.file_id,
             'shared_by_uid': user['uid'],
             'shared_by_name': user.get('name', user.get('email', '').split('@')[0]),
-            'file_name': original_file['name'],
-            'file_size': original_file['size'],
-            'description': request.description,
+            'file_name': original_file.get('name', 'Unknown File'),
+            'file_size': original_file.get('size', 0),
+            'description': request.description or '',
             'downloads_count': 0,
             'ratings': {},
             'average_rating': 0.0,
             'rating_count': 0,
-            'created_at': datetime.now(),
+            'created_at': firestore.SERVER_TIMESTAMP,
             'is_active': True,
-            'file_type': original_file.get('content_type', ''),
-            'storage_path': original_file['storage_path']
+            'file_type': original_file.get('content_type', original_file.get('type', '')),
+            'storage_path': original_file.get('storage_path', original_file.get('path', ''))
         }
         
         db.collection('shared_files').document(shared_file_id).set(shared_file_data)
@@ -84,8 +85,13 @@ async def share_file(request: ShareFileRequest, user = Depends(verify_token)):
             "community_url": f"/community/{shared_file_id}"
         }
         
+    except HTTPException:
+        raise
     except Exception as e:
         print(f"Error sharing file: {e}")
+        print(f"Error type: {type(e)}")
+        print(f"User data: {user}")
+        print(f"Original file data: {original_file}")
         raise HTTPException(status_code=500, detail=f"Failed to share file: {str(e)}")
 
 @router.get("/files")
