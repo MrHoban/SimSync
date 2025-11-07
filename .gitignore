@@ -3,12 +3,16 @@ node_modules/
 simsync/frontend/node_modules/
 simsync/backend/__pycache__/
 
-# Environment files
+# Environment files (CRITICAL - Never commit these!)
 .env
 .env.local
 .env.production
 simsync/backend/.env
 simsync/frontend/.env.local
+
+# Firebase Service Account keys (CRITICAL - Never commit these!)
+*firebase*.json
+*service-account*.json
 
 # Build outputs
 dist/
