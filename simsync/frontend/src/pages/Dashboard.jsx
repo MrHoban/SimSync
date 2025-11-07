@@ -11,6 +11,8 @@ const Dashboard = () => {
     const [uploadProgress, setUploadProgress] = useState([])
     const [dragOver, setDragOver] = useState(false)
     const [userInfo, setUserInfo] = useState(null)
+    const [communityFiles, setCommunityFiles] = useState([])
+    const [showCommunity, setShowCommunity] = useState(false)
 
     // Set page title
     useEffect(() => {
@@ -300,6 +302,46 @@ const Dashboard = () => {
         }
     }
 
+    const loadCommunityFiles = async () => {
+        try {
+            // This would be a new API endpoint for shared community files
+            // For now, we'll use a placeholder
+            setCommunityFiles([
+                {
+                    id: 'demo1',
+                    name: 'Beautiful Hair Pack.package',
+                    size: 1024 * 1024 * 5, // 5MB
+                    shared_by: 'SimmerFan2024',
+                    downloads: 156,
+                    description: 'Amazing hair collection for your Sims!'
+                },
+                {
+                    id: 'demo2', 
+                    name: 'Modern Kitchen Set.package',
+                    size: 1024 * 1024 * 8, // 8MB
+                    shared_by: 'BuildMaster',
+                    downloads: 89,
+                    description: 'Complete modern kitchen furniture set'
+                }
+            ])
+        } catch (error) {
+            console.error('Error loading community files:', error)
+        }
+    }
+
+    const handleShareFile = async (file) => {
+        if (userInfo?.subscription_tier !== 'premium') {
+            alert('🚀 File sharing is a Premium feature! Upgrade to Premium to share your content with the SimSync community.')
+            return
+        }
+        
+        const confirmed = confirm(`Share "${file.name}" with the SimSync community?\n\nOther users will be able to download this file.`)
+        if (confirmed) {
+            // This would call the backend to share the file
+            alert('🎉 File shared with community! (Feature coming soon)')
+        }
+    }
+
     if (loading) {
         return (
             <div className="loading-spinner">
@@ -477,13 +519,32 @@ const Dashboard = () => {
                                                 Type: {file.content_type}
                                             </p>
                                         </div>
-                                        <div style={{ display: 'flex', gap: '12px' }}>
+                                        <div>
                                             <button
-                                                onClick={(e) => handleDownload(file, e)}
+                                                onClick={(event) => handleDownload(file, event)}
                                                 className="btn-download"
                                             >
                                                 Download
                                             </button>
+                                            {userInfo?.subscription_tier === 'premium' && (
+                                                <button
+                                                    onClick={() => handleShareFile(file)}
+                                                    className="btn-share"
+                                                    style={{ 
+                                                        backgroundColor: 'var(--sims-lime)', 
+                                                        color: 'white',
+                                                        border: 'none',
+                                                        padding: '6px 12px',
+                                                        borderRadius: '6px',
+                                                        fontSize: '0.8rem',
+                                                        fontWeight: '600',
+                                                        cursor: 'pointer',
+                                                        marginLeft: '8px'
+                                                    }}
+                                                >
+                                                    Share
+                                                </button>
+                                            )}
                                             <button
                                                 onClick={() => handleDelete(file)}
                                                 className="btn-delete"
@@ -494,6 +555,106 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                             ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Community Files Section */}
+                <div className="backups-card">
+                    <div className="backups-header">
+                        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'var(--sims-blue)' }}>
+                            🌟 Community Shared Files
+                        </h2>
+                        <button
+                            onClick={() => {
+                                setShowCommunity(!showCommunity)
+                                if (!showCommunity && communityFiles.length === 0) {
+                                    loadCommunityFiles()
+                                }
+                            }}
+                            className="btn-secondary"
+                            style={{ fontSize: '0.9rem', padding: '8px 16px' }}
+                        >
+                            {showCommunity ? 'Hide Community' : 'Browse Community'}
+                        </button>
+                    </div>
+
+                    {showCommunity && (
+                        <div>
+                            {communityFiles.length === 0 ? (
+                                <p style={{ 
+                                    color: 'var(--sims-gray)', 
+                                    textAlign: 'center',
+                                    fontSize: '1rem',
+                                    fontStyle: 'italic',
+                                    padding: '20px'
+                                }}>
+                                    Loading community files...
+                                </p>
+                            ) : (
+                                <div>
+                                    {communityFiles.map((file) => (
+                                        <div key={file.id} className="backup-item">
+                                            <div style={{ flex: 1 }}>
+                                                <div style={{ 
+                                                    fontWeight: '600',
+                                                    marginBottom: '4px'
+                                                }}>
+                                                    {file.name}
+                                                </div>
+                                                <div style={{ 
+                                                    fontSize: '0.8rem', 
+                                                    color: 'var(--sims-gray)',
+                                                    marginBottom: '4px'
+                                                }}>
+                                                    {formatFileSize(file.size)} • Shared by {file.shared_by} • {file.downloads} downloads
+                                                </div>
+                                                <div style={{ 
+                                                    fontSize: '0.85rem', 
+                                                    color: 'var(--sims-dark-gray)',
+                                                    fontStyle: 'italic'
+                                                }}>
+                                                    {file.description}
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <button
+                                                    onClick={() => alert('🚀 Community downloads coming soon! This feature will be available in the next update.')}
+                                                    className="btn-download"
+                                                >
+                                                    Download
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    
+                                    <div style={{ 
+                                        marginTop: '16px', 
+                                        padding: '12px', 
+                                        backgroundColor: 'var(--sims-light-gray)', 
+                                        borderRadius: '8px',
+                                        textAlign: 'center'
+                                    }}>
+                                        <p style={{ 
+                                            margin: '0 0 8px 0', 
+                                            fontWeight: '600', 
+                                            color: 'var(--sims-blue)' 
+                                        }}>
+                                            Want to share your content?
+                                        </p>
+                                        <p style={{ 
+                                            margin: '0', 
+                                            fontSize: '0.9rem', 
+                                            color: 'var(--sims-gray)' 
+                                        }}>
+                                            {userInfo?.subscription_tier === 'premium' 
+                                                ? 'Use the "Share" button on your files above!'
+                                                : 'Upgrade to Premium to share your custom content with the community!'
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

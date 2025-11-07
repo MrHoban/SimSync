@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../firebase'
 
@@ -34,6 +35,13 @@ const Login = () => {
 
   return (
     <div className="login-container">
+      {/* Back to Landing Page */}
+      <div style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 10 }}>
+        <Link to="/" className="btn-back">
+          ← Back to Home
+        </Link>
+      </div>
+
       <div className="login-card">
         {/* Header */}
         <div>
