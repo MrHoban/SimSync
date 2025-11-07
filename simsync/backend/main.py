@@ -15,8 +15,8 @@ initialize_firebase()
 
 app = FastAPI(
     title="SimSync API",
-    desccription="Backend API for Sims 4 Custom Content Backup Tool",
-    version="1.0.0"
+    description="Backend API for Sims 4 Custom Content Backup Tool",
+    version="1.0.1"
 )
 
 app.add_middleware(
