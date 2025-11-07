@@ -109,6 +109,18 @@ class ApiService {
       method: 'DELETE'
     })
   }
+
+  // Payment methods
+  async createCheckoutSession(userId, successUrl, cancelUrl) {
+    return this.makeRequest('/payments/create-checkout-session', {
+      method: 'POST',
+      body: JSON.stringify({
+        user_id: userId,
+        success_url: successUrl,
+        cancel_url: cancelUrl
+      })
+    })
+  }
 }
 
 // Create and export a singleton instance
@@ -120,5 +132,6 @@ export const {
   getUserInfo,
   uploadFile,
   listFiles,
-  deleteFile
+  deleteFile,
+  createCheckoutSession
 } = apiService
