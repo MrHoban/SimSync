@@ -29,47 +29,6 @@ const Dashboard = () => {
         return () => clearTimeout(timer)
     }, [])
 
-    const testBackendConnection = async () => {
-        try {
-            console.log('Testing backend connection...')
-            
-            // Test 1: No auth required endpoint
-            const testResponse = await fetch('http://localhost:8000/api/auth/test')
-            const testData = await testResponse.json()
-            console.log('Test endpoint response:', testData)
-            
-            // Test 2: Try to get a token
-            const user = auth.currentUser
-            if (!user) {
-                console.log('No user logged in!')
-                return
-            }
-            
-            console.log('Current user:', user.uid)
-            const token = await user.getIdToken(true) // Force refresh
-            console.log('Token obtained, length:', token.length)
-            
-            // Test 3: Try to verify token
-            const verifyResponse = await fetch('http://localhost:8000/api/auth/verify', {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            })
-            
-            if (verifyResponse.ok) {
-                const verifyData = await verifyResponse.json()
-                console.log('Token verification successful:', verifyData)
-            } else {
-                const errorData = await verifyResponse.json()
-                console.log('Token verification failed:', errorData)
-            }
-            
-        } catch (error) {
-            console.error('Backend test failed:', error)
-        }
-    }
-
     const loadUserData = async () => {
         try {
             const userResponse = await apiService.verifyUser()
@@ -174,7 +133,7 @@ const Dashboard = () => {
             })
 
             // Wait for all uploads to complete (or fail)
-            const results = await Promise.allSettled(uploadPromises)
+            await Promise.allSettled(uploadPromises)
             
             // Show detailed results
             if (errors.length === 0) {
