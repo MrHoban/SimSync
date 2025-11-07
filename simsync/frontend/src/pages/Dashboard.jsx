@@ -455,6 +455,24 @@ const Dashboard = () => {
         }
     }
 
+    const handleUnshareFile = async (file) => {
+        const confirmed = confirm(`Remove "${file.name}" from community sharing?\n\nThis will:\n• Stop other users from discovering and downloading this file\n• Remove it from the community section\n• Keep your original file in "My Files"\n\nProceed?`)
+        
+        if (confirmed) {
+            try {
+                await apiService.unshareFile(file.id)
+                alert(`✅ "${file.name}" removed from community!\n\nYour file is no longer shared but remains in your personal files.`)
+                
+                // Refresh community files to remove the unshared file
+                loadCommunityFiles()
+                
+            } catch (error) {
+                console.error('Error unsharing file:', error)
+                alert(`❌ Failed to remove file from community: ${error.message || 'Unknown error'}`)
+            }
+        }
+    }
+
     if (loading) {
         return (
             <div className="loading-spinner">
@@ -818,6 +836,28 @@ const Dashboard = () => {
                                                         </div>
                                                     )}
                                                 </button>
+                                                
+                                                {/* Show unshare button only for user's own files */}
+                                                {userInfo && file.shared_by_uid === userInfo.uid && (
+                                                    <button
+                                                        onClick={() => handleUnshareFile(file)}
+                                                        style={{
+                                                            backgroundColor: '#e74c3c',
+                                                            color: 'white',
+                                                            border: 'none',
+                                                            borderRadius: '8px',
+                                                            padding: '8px 12px',
+                                                            fontSize: '0.8rem',
+                                                            fontWeight: '600',
+                                                            cursor: 'pointer',
+                                                            transition: 'all 0.3s ease'
+                                                        }}
+                                                        onMouseOver={(e) => e.target.style.backgroundColor = '#c0392b'}
+                                                        onMouseOut={(e) => e.target.style.backgroundColor = '#e74c3c'}
+                                                    >
+                                                        🗑️ Remove from Community
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
                                     ))}
